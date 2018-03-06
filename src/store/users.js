@@ -1,10 +1,15 @@
 const state = {
   all: {},
-  currentUser: 'mr_a'
+  currentUser: 'mr_b'
 }
 
 const mutations = {
-
+  SET_USER(state, {user}) {
+    state.all = {
+      ...state.all,
+      [user.id] : user.data()
+    }
+  }
 }
 
 const actions = {
@@ -25,6 +30,12 @@ const actions = {
       firstName: 'Cee',
       lastName: 'Ceeson'
     })
+  },
+  async get({commit, rootState}) {
+    let userRef = rootState.db.collection('users')
+    let users = await userRef.get()
+
+    users.forEach(user => commit('SET_USER', {user}))
   }
 }
 

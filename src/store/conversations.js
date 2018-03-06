@@ -7,7 +7,18 @@ const state = {
   allMsgIds: []
 }
 const mutations = {
-
+  SET_CONVERSATION(state, {conversation}) {
+    const data = conversation.data()
+    state.all = {
+      ...state.all,
+      [conversation.id]: {
+        users: data.users,
+        created: data.created,
+        messages: []
+      }
+    }
+    state.allIds.push(conversation.id)
+  }
 }
 const actions = {
   seed({rootState}) {
@@ -27,6 +38,12 @@ const actions = {
       users: ['mr_a', 'mr_c'],
       messages: []
     })
+  },
+  async get({commit, rootState}) {
+    let convoRef = rootState.db.collection('conversations')
+    let convos = await convoRef.get()
+
+    convos.forEach(conversation => commit('SET_CONVERSATION', {conversation}))
   }
 }
 export default {
